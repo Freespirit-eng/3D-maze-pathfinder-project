@@ -146,7 +146,7 @@ class Analytics:
         if first_call:
             node = self.path_history_tree
             print("\n" + "="*70)
-            print("🏆 PERFORMANCE LEADERBOARD (Fastest to Slowest)")
+            print("PERFORMANCE LEADERBOARD (Fastest to Slowest)")
             print("="*70)
             self._count = 0
             self._limit = limit
@@ -195,7 +195,7 @@ class Analytics:
             return
         
         print("\n" + "="*90)
-        print("📊 ALGORITHM COMPARISON")
+        print("ALGORITHM COMPARISON")
         print("="*90)
         print(f"{'Algorithm':<20} | {'Runs':>6} | {'Avg Time':>10} | "
               f"{'Best':>10} | {'Worst':>10} | {'Avg Nodes':>10}")

@@ -191,106 +191,15 @@ def dijkstra(start_node, goal_node, maze):
     return None, visited_count, len(visited_order), visited_order
 
 
-def bidirectional_search(start_node, goal_node, maze):
-    """
-    Bidirectional BFS - searches from both start and goal simultaneously.
-    Can be faster than regular BFS for long paths.
-    
-    Args:
-        start_node: Starting node
-        goal_node: Goal node
-        maze: MazeEngine instance
-    
-    Returns:
-        tuple: (path, nodes_explored, visited_count, visited_order)
-    """
-    # Reset pathfinding state
-    maze.reset_pathfinding()
-    
-    # Forward search from start
-    queue_forward = deque([start_node])
-    visited_forward = {start_node: None}
-    
-    # Backward search from goal
-    queue_backward = deque([goal_node])
-    visited_backward = {goal_node: None}
-    
-    visited_count = 0
-    visited_order = []
-    
-    while queue_forward and queue_backward:
-        # Forward step
-        current_forward = queue_forward.popleft()
-        visited_count += 1
-        visited_order.append((current_forward.x, current_forward.y, current_forward.z))
-        
-        # Check if paths meet
-        if current_forward in visited_backward:
-            # Reconstruct path
-            path = _reconstruct_bidirectional_path(
-                current_forward, visited_forward, visited_backward
-            )
-            return path, visited_count, len(visited_order), visited_order
-        
-        # Expand forward
-        for neighbor in maze.get_neighbors(current_forward):
-            if neighbor not in visited_forward:
-                visited_forward[neighbor] = current_forward
-                queue_forward.append(neighbor)
-        
-        # Backward step
-        if queue_backward:
-            current_backward = queue_backward.popleft()
-            visited_count += 1
-            visited_order.append((current_backward.x, current_backward.y, current_backward.z))
-            
-            # Check if paths meet
-            if current_backward in visited_forward:
-                # Reconstruct path
-                path = _reconstruct_bidirectional_path(
-                    current_backward, visited_forward, visited_backward
-                )
-                return path, visited_count, len(visited_order), visited_order
-            
-            # Expand backward
-            for neighbor in maze.get_neighbors(current_backward):
-                if neighbor not in visited_backward:
-                    visited_backward[neighbor] = current_backward
-                    queue_backward.append(neighbor)
-    
-    # No path found
-    return None, visited_count, len(visited_order), visited_order
-
-
-def _reconstruct_bidirectional_path(meeting_node, visited_forward, visited_backward):
-    """Helper function to reconstruct path from bidirectional search"""
-    # Build path from start to meeting point
-    path_forward = []
-    current = meeting_node
-    while current is not None:
-        path_forward.append((current.x, current.y, current.z))
-        current = visited_forward[current]
-    path_forward.reverse()
-    
-    # Build path from meeting point to goal
-    path_backward = []
-    current = visited_backward[meeting_node]
-    while current is not None:
-        path_backward.append((current.x, current.y, current.z))
-        current = visited_backward[current]
-    
-    return path_forward + path_backward
-
-
 # Algorithm registry for easy access
 ALGORITHMS = {
     'a_star': a_star,
     'bfs': bfs,
-    'dijkstra': dijkstra,
-    'bidirectional': bidirectional_search
+    'dijkstra': dijkstra
 }
 
 
 def get_algorithm(name):
     """Get pathfinding algorithm by name"""
     return ALGORITHMS.get(name.lower())
+
